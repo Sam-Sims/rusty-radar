@@ -26,7 +26,7 @@ You will need to set the `LIBCLANG_PATH` as well as adding `xtensa-esp-elf/bin` 
 
 ### Generating a project
 
-We can use `esp-generate` to generate a template for our project:
+We can use `cargo generate` to setup a template for our project:
 
 ```bash
 cargo generate esp-rs/esp-idf-template
@@ -85,16 +85,25 @@ App/part. size:    584,624/1,048,576 bytes, 55.75%
 [00:00:01] [========================================]       1/1       0x0      Verifying... OK!  [00:00:00] [========================================]       1/1       0x8000   Verifying... OK!  [00:00:26] [========================================]      18/18      0x10000  Verifying... OK!  [2026-08-03T14:29:32Z INFO ] Flashing has completed!
 ```
 
-## Graphics
+## Drivers
 
-For graphics we first need a driver:
+For the display we need a driver:
 
 ```bash
 cargo add gc9a01-rs
 ```
 
-There is a nice example of how to use here
-https://github.com/IniterWorker/esp32-s3-touch-lcd-1-28
+And also for the touch element, this driver isnt on cargo so we can add it manually into our `Cargo.toml`
+
+```
+cst816s-rs = { git = "https://github.com/IniterWorker/cst816s", rev = "966a0761f992c63ea1a953ba3d4a3fab8de15db0", features = [
+    "loglib",
+    "std",
+] }
+```
+
+There is a nice example of how to use these [here](https://github.com/IniterWorker/esp32-s3-touch-lcd-1-28)
 
 ## References
+### GPIO pinout
 ![pinout](https://docs.waveshare.com/assets/images/ESP32-S3-Touch-LCD-1.28-pin-4c11432ab715535bf20f334d46ebefbf.webp)
