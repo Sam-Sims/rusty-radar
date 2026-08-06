@@ -108,9 +108,9 @@ There is a nice example of how to use these [here](https://github.com/IniterWork
 
 The repo is split into a couple crates:
 
-[firmware](firmware/README.md)
-[graphics](graphics/README.md)
-[simulator](simulator/README.md)
+- [firmware](firmware/README.md)
+- [graphics](graphics/README.md)
+- [simulator](simulator/README.md)
 
 See each link for more information.
 
