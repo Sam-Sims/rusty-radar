@@ -1,6 +1,14 @@
 # firmware
 
-Crate containing firmware+drivers for ESP32-S3 + display.
+Firmware and drivers an for ESP32-S3 board with a 1.28" GC9A01 display and CST816S touch controller.
+
+### Drivers
+- Display drivers: [gc9a01](https://docs.rs/gc9a01-rs/0.4.2/gc9a01/index.html)
+- Touch drivers: [cst816s](https://github.com/IniterWorker/cst816s)
+
+### Rendering
+
+Graphics are handeled in the [graphics](../graphics/README.md) crate.
 
 ## Usage
 

@@ -93,7 +93,7 @@ For the display we need a driver:
 cargo add gc9a01-rs
 ```
 
-And also for the touch element, this driver isnt on cargo so we can add it manually into our `Cargo.toml`
+For the touchscreen, the driver by the same author isnt published as a crate, but we can add it manually through the git repo into our `Cargo.toml`
 
 ```
 cst816s-rs = { git = "https://github.com/IniterWorker/cst816s", rev = "966a0761f992c63ea1a953ba3d4a3fab8de15db0", features = [
@@ -103,6 +103,16 @@ cst816s-rs = { git = "https://github.com/IniterWorker/cst816s", rev = "966a0761f
 ```
 
 There is a nice example of how to use these [here](https://github.com/IniterWorker/esp32-s3-touch-lcd-1-28)
+
+## Development
+
+The repo is split into a couple crates:
+
+[firmware](firmware/README.md)
+[graphics](graphics/README.md)
+[simulator](simulator/README.md)
+
+See each link for more information.
 
 ## References
 ### GPIO pinout
