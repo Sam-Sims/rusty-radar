@@ -1,0 +1,11 @@
+[package]
+name = "rusty-radar-simulator"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.82"
+
+[dependencies]
+embedded-graphics = "0.8.2"
+embedded-graphics-simulator = "0.8.0"
+rand = { version = "0.9.5", default-features = false, features = ["os_rng", "small_rng"] }
+rusty-radar-graphics = { path = "../graphics" }

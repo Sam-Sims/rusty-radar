@@ -1,0 +1,10 @@
+[package]
+name = "rusty-radar-graphics"
+version = "0.1.0"
+authors = ["Sam Sims <samsimss98@gmail.com>"]
+edition = "2021"
+rust-version = "1.82"
+
+
+[dependencies]
+embedded-graphics = "0.8.2"

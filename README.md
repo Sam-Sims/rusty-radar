@@ -9,6 +9,7 @@ This repo documents notes/progress towards a working aircraft "radar" using data
 - GC9A01 1.28" LCD
 - Random coax cable [for an antenna](https://discussions.flightaware.com/t/quick-spider-no-soldering-no-connector/19181)
 - 1090mhz bandpass filter + LNA [cheap combo thing](https://www.aliexpress.com/item/1005004987445918.html)
+- RTL SDR dongle
 
 ## Setup
 
@@ -94,3 +95,6 @@ cargo add gc9a01-rs
 
 There is a nice example of how to use here
 https://github.com/IniterWorker/esp32-s3-touch-lcd-1-28
+
+## References
+![pinout](https://docs.waveshare.com/assets/images/ESP32-S3-Touch-LCD-1.28-pin-4c11432ab715535bf20f334d46ebefbf.webp)
