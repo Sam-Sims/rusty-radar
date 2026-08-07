@@ -1,6 +1,6 @@
 [workspace]
 members = ["firmware", "simulator", "graphics"]
-default-members = ["firmware"]
+default-members = ["simulator", "graphics"]
 resolver = "2"
 
 [profile.release]

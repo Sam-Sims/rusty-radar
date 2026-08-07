@@ -1,10 +1,11 @@
-use std::{thread};
-use embassy_time::{with_deadline, Duration, Instant};
+use std::thread;
+
 use anyhow::{anyhow, Error, Result};
 use cst816s::{
     command::{Gesture, IrqCtl},
     Cst816s,
 };
+use embassy_time::{with_deadline, Duration, Instant};
 use esp_idf_svc::hal::{
     delay::Delay,
     gpio::{self, PinDriver, Pull},
@@ -100,7 +101,7 @@ fn initalise_touch(
 
 fn the_real_main() -> Result<(), Error> {
     let peripherals = Peripherals::take()?;
-
+    log::info!("Spawning run thread");
     // buffered graphics needs a larger than default stack size
     thread::Builder::new()
         .name("display".into())
@@ -109,6 +110,7 @@ fn the_real_main() -> Result<(), Error> {
             let pins = peripherals.pins;
             let mut delay = Delay::new_default();
 
+            log::info!("Initalising display");
             let mut lcd_bl = PinDriver::output(pins.gpio2)?;
             let mut lcd_rst = PinDriver::output(pins.gpio14)?;
             let mut display_device = initalise_display(
@@ -123,6 +125,7 @@ fn the_real_main() -> Result<(), Error> {
             )?
             .into_buffered_graphics();
 
+            log::info!("Initalising touchscreen");
             let mut tp_rst_driver = PinDriver::output(pins.gpio13)?;
             let mut tp_int_driver = PinDriver::input(pins.gpio5, Pull::Up)?;
             let mut touch_device = initalise_touch(
@@ -133,6 +136,7 @@ fn the_real_main() -> Result<(), Error> {
                 &mut delay,
             )?;
 
+            log::info!("Simulating planes");
             // mock some planes
             let mut simulated_planes = [
                 SimCraft::new(),
@@ -143,19 +147,24 @@ fn the_real_main() -> Result<(), Error> {
             ];
 
             let mut scale = RadarScale::Km20;
-            let mut redraw =
-                |scale: RadarScale, aircraft: &[Aircraft<'_>]| -> Result<(), Error> {
-                    rusty_radar_graphics::draw_frame(&mut display_device, scale).map_err(|error| anyhow!("{error:?}"))?;
-                    rusty_radar_graphics::draw_planes(&mut display_device, aircraft).map_err(|error| anyhow!("{error:?}"))?;
-                    display_device.flush().map_err(|error| anyhow!("{error:?}"))?;
-                    Ok(())
-                };
+            let mut redraw = |scale: RadarScale, aircraft: &[Aircraft<'_>]| -> Result<(), Error> {
+                rusty_radar_graphics::draw_frame(&mut display_device, scale)
+                    .map_err(|error| anyhow!("{error:?}"))?;
+                rusty_radar_graphics::draw_planes(&mut display_device, aircraft)
+                    .map_err(|error| anyhow!("{error:?}"))?;
+                display_device
+                    .flush()
+                    .map_err(|error| anyhow!("{error:?}"))?;
+                Ok(())
+            };
 
             let update_timeout = Duration::from_secs(2);
             let mut next_update = Instant::now() + update_timeout;
 
             let aircraft = simulated_planes.each_ref().map(SimCraft::to_aircraft);
             redraw(scale, &aircraft)?;
+
+            log::info!("Setup done! Entering run loop");
 
             // event handler
             loop {
@@ -191,7 +200,6 @@ fn the_real_main() -> Result<(), Error> {
                         next_update = Instant::now() + update_timeout;
                     }
                 }
-
             }
         })?
         .join()

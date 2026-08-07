@@ -33,7 +33,7 @@ cargo generate esp-rs/esp-idf-template
 cargo build
 ```
 
-### Flashing
+### First test flash
 
 Install espflash:
 

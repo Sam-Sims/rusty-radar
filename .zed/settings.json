@@ -7,19 +7,38 @@
       },
       "initialization_options": {
         "checkOnSave": true,
+        "procMacro": {
+          "server": "/mnt/SSD2/arch/tools/rustup/toolchains/esp/libexec/rust-analyzer-proc-macro-srv"
+        },
         "cargo": {
+          "extraEnv": {
+            "RUSTC_WRAPPER": "sccache",
+            "CC": "sccache gcc"
+          },
           "buildScripts": {
             "enable": true,
+            "invocationStrategy": "once",
+            "useRustcWrapper": false,
             "overrideCommand": [
-              "cargo",
-              "+esp",
-              "check",
-              "--quiet",
-              "--workspace",
-              "--message-format=json",
-              "--all-targets"
+              "cargo", "+esp",
+              "--config", "firmware/.cargo/config.toml",
+              "check", "--quiet",
+              "--package", "rusty-radar",
+              "--message-format=json", "--all-targets",
+              "--target-dir", "target/rust-analyzer/firmware"
             ]
           }
+        },
+        "check": {
+          "invocationStrategy": "once",
+          "overrideCommand": [
+            "cargo", "+esp",
+            "--config", "firmware/.cargo/config.toml",
+            "check", "--quiet",
+            "--package", "rusty-radar",
+            "--message-format=json", "--all-targets",
+            "--target-dir", "target/rust-analyzer/firmware"
+          ]
         }
       }
     }

@@ -1,15 +1,17 @@
-use std::{thread, time::Duration, time::Instant};
+use std::{
+    thread,
+    time::{Duration, Instant},
+};
 
 use embedded_graphics::{draw_target::DrawTarget, pixelcolor::Rgb565, prelude::*};
 use embedded_graphics_simulator::{
     OutputSettingsBuilder, SimulatorDisplay, SimulatorEvent, Window,
 };
-use rusty_radar_graphics::{RadarScale, aircraft::Aircraft, draw_frame};
+use rusty_radar_graphics::{aircraft::Aircraft, draw_frame, RadarScale};
 
 use crate::aircraft::SimCraft;
 
 pub mod aircraft;
-
 
 fn main() -> Result<(), core::convert::Infallible> {
     let mut display = SimulatorDisplay::<Rgb565>::new(Size::new(240, 240));
