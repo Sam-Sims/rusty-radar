@@ -3,8 +3,8 @@ pub mod aircraft;
 
 use embedded_graphics::{
     mono_font::{
-        ascii::{FONT_6X9, FONT_9X18_BOLD},
         MonoFont, MonoTextStyle,
+        ascii::{FONT_6X9, FONT_9X18_BOLD},
     },
     pixelcolor::Rgb565,
     prelude::*,
@@ -29,15 +29,15 @@ const SCALE_Y_OFFSET: i32 = 7;
 pub enum RadarScale {
     Km5,
     Km10,
-    Km20,
+    Km30,
 }
 
 impl RadarScale {
     pub fn next(self) -> Self {
         match self {
             Self::Km5 => Self::Km10,
-            Self::Km10 => Self::Km20,
-            Self::Km20 => Self::Km5,
+            Self::Km10 => Self::Km30,
+            Self::Km30 => Self::Km5,
         }
     }
 
@@ -45,7 +45,7 @@ impl RadarScale {
         match self {
             Self::Km5 => "5km",
             Self::Km10 => "10km",
-            Self::Km20 => "20km",
+            Self::Km30 => "20km",
         }
     }
 }

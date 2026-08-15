@@ -1,4 +1,4 @@
-use rand::{rngs::SmallRng, Rng, SeedableRng};
+use rand::{Rng, SeedableRng, rngs::SmallRng};
 use rusty_radar_graphics::Aircraft;
 
 const SPEED: f32 = 5.0;
