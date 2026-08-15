@@ -2,9 +2,11 @@
 name = "rusty-radar"
 version = "0.1.0"
 authors = ["Sam Sims <samsimss98@gmail.com>"]
-edition = "2021"
+edition = "2024"
+rust-version = "1.95"
+
+[workspace]
 resolver = "2"
-rust-version = "1.82"
 
 [[bin]]
 name = "rusty-radar"
@@ -18,7 +20,6 @@ embassy-time = { version = "0.5", features = ["generic-queue-8"] }
 gc9a01-rs = "0.4.2"
 embedded-graphics = "0.8.2"
 rusty-radar-graphics = { path = "../graphics" }
-rusty-radar-simulator = { path = "../simulator" }
 cst816s-rs = { git = "https://github.com/IniterWorker/cst816s", rev = "966a0761f992c63ea1a953ba3d4a3fab8de15db0", features = [
     "loglib",
     "std",
@@ -27,3 +28,15 @@ anyhow = { version = "1.0.104", default-features = false }
 
 [build-dependencies]
 embuild = "0.33"
+
+[profile.release]
+opt-level = "s"
+
+[profile.dev]
+debug = true
+opt-level = "z"
+
+[patch.crates-io]
+esp-idf-sys = { git = "https://github.com/esp-rs/esp-idf-sys.git" }
+esp-idf-hal = { git = "https://github.com/esp-rs/esp-idf-hal.git" }
+esp-idf-svc = { git = "https://github.com/esp-rs/esp-idf-svc.git" }

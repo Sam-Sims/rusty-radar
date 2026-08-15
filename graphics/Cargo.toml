@@ -2,8 +2,8 @@
 name = "rusty-radar-graphics"
 version = "0.1.0"
 authors = ["Sam Sims <samsimss98@gmail.com>"]
-edition = "2021"
-rust-version = "1.82"
+edition = "2024"
+rust-version = "1.95"
 
 
 [dependencies]

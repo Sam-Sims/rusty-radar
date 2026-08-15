@@ -1,6 +1,6 @@
 [workspace]
-members = ["firmware", "simulator", "graphics"]
-default-members = ["simulator", "graphics"]
+members = ["simulator", "graphics", "webserver"]
+exclude = ["firmware"]
 resolver = "2"
 
 [profile.release]
@@ -9,8 +9,3 @@ opt-level = "s"
 [profile.dev]
 debug = true
 opt-level = "z"
-
-[patch.crates-io]
-esp-idf-sys = { git = "https://github.com/esp-rs/esp-idf-sys.git" }
-esp-idf-hal = { git = "https://github.com/esp-rs/esp-idf-hal.git" }
-esp-idf-svc = { git = "https://github.com/esp-rs/esp-idf-svc.git" }
