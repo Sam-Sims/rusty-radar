@@ -43,18 +43,24 @@ impl<'a> Aircraft<'a> {
         D: DrawTarget<Color = Rgb565>,
     {
         let position = self.position_to_radar(center, radar_radius, scale, top_heading);
-        self.draw_track(target, position)?;
+        self.draw_track(target, position, top_heading)?;
         self.draw_symbol(target, position)?;
         self.draw_label(target, position)?;
 
         Ok(())
     }
 
-    fn draw_track<D>(&self, target: &mut D, position: Point) -> Result<(), D::Error>
+    fn draw_track<D>(
+        &self,
+        target: &mut D,
+        position: Point,
+        top_heading: f32,
+    ) -> Result<(), D::Error>
     where
         D: DrawTarget<Color = Rgb565>,
     {
-        let direction = caclulate_heading_point(self.heading);
+        let relative_heading = (self.heading - top_heading).rem_euclid(360.0);
+        let direction = caclulate_heading_point(relative_heading);
 
         Line::new(position, position + direction)
             .into_styled(PrimitiveStyle::with_stroke(AIRCRAFT_COLOUR, 1))
@@ -137,7 +143,7 @@ impl<'a> Aircraft<'a> {
         let (sin, cos) = top_heading.to_radians().sin_cos();
 
         let x = self.x * cos - self.y * sin;
-        let y = self.x * sin + self.y * cos;
+        let y = -(self.x * sin + self.y * cos);
 
         center
             + Point::new(
@@ -148,9 +154,6 @@ impl<'a> Aircraft<'a> {
 }
 
 fn caclulate_heading_point(heading: f32) -> Point {
-    // let vector_bin = (heading as usize * HEADING_VECTOR.len()) / 360;
-    // let (x, y) = HEADING_VECTOR[vector_bin];
-    // Point::new(x, y)
     let (sin, cos) = heading.to_radians().sin_cos();
     Point::new(
         (sin * TRACK_LENGTH).round() as i32,
