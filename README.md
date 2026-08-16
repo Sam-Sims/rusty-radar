@@ -108,10 +108,10 @@ There is a nice example of how to use these [here](https://github.com/IniterWork
 
 The repo is split into a couple crates:
 
-- [firmware](firmware/README.md)
-- [graphics](graphics/README.md)
-- [simulator](simulator/README.md)
-- [webserver](webeserver/README.md)
+- [firmware](firmware/)
+- [graphics](graphics/)
+- [simulator](simulator/)
+- [webserver](webserver/)
 
 See each link for more information.
 
