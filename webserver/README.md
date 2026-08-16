@@ -1,4 +1,4 @@
-# simulator
+# webserver
 
 Axum webserver exposing an `/api/aircraft` JSON endpoint that returns
 
