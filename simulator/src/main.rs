@@ -11,9 +11,9 @@ use embedded_graphics_simulator::{
 use rusty_radar_graphics::RadarScale;
 use serde::Deserialize;
 
-use crate::aircraft::SimCraft;
+use crate::simcraft::SimCraft;
 
-pub mod aircraft;
+pub mod simcraft;
 
 #[derive(Deserialize)]
 struct PositionOffset {
@@ -81,10 +81,13 @@ fn main() -> Result<(), core::convert::Infallible> {
             let aircraft = raw_aircraft
                 .iter()
                 .map(|aircraft| {
-                    let x = 120.0 + aircraft.position_offset.x / 30000.0 * 102.0;
-                    let y = 120.0 - aircraft.position_offset.y / 30000.0 * 102.0;
                     let track = aircraft.track.and_then(track_to_heading).unwrap_or(0);
-                    rusty_radar_graphics::Aircraft::new(x as i32, y as i32, track, &aircraft.label)
+                    rusty_radar_graphics::Aircraft::new(
+                        aircraft.position_offset.x as f32,
+                        aircraft.position_offset.y as f32,
+                        track,
+                        &aircraft.label,
+                    )
                 })
                 .collect::<Vec<_>>();
 
@@ -97,8 +100,9 @@ fn main() -> Result<(), core::convert::Infallible> {
             // display.clear(Rgb565::BLACK)?;
             // rusty_radar_graphics::draw_face(&mut display)?;
             // rusty_radar_graphics::draw_scale(&mut display, rusty_radar_graphics::RadarScale::Km5)?;
-            rusty_radar_graphics::draw_frame(&mut display, RadarScale::Km5)?;
-            rusty_radar_graphics::draw_planes(&mut display, &aircraft)?;
+            // rusty_radar_graphics::draw_frame(&mut display, RadarScale::Km5)?;
+            // rusty_radar_graphics::draw_planes(&mut display, &aircraft)?;
+            rusty_radar_graphics::draw(&mut display, RadarScale::Km30, &aircraft, 156.0);
             window.update(&display);
             next_update += update_interval;
         }

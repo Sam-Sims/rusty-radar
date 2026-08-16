@@ -46,6 +46,6 @@ impl SimCraft {
     }
 
     pub fn to_aircraft(&self) -> Aircraft<'_> {
-        Aircraft::new(self.x as i32, self.y as i32, self.heading, &self.label)
+        Aircraft::new(self.x, self.y, self.heading, &self.label)
     }
 }

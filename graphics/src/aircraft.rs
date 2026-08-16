@@ -5,6 +5,9 @@ use embedded_graphics::{
     primitives::{Line, PrimitiveStyle, PrimitiveStyleBuilder, Rectangle},
     text::{Alignment, Baseline, Text, TextStyleBuilder},
 };
+use micromath::F32Ext;
+
+use crate::RadarScale;
 
 const LABEL_FONT: &MonoFont<'static> = &FONT_5X8;
 const AIRCRAFT_COLOUR: Rgb565 = Rgb565::GREEN;
@@ -32,44 +35,54 @@ const HEADING_VECTOR: [(i32, i32); 16] = [
 ];
 
 pub struct Aircraft<'a> {
-    pos: Point,
+    x: f32,
+    y: f32,
     heading: u16,
     label: &'a str,
 }
 
 impl<'a> Aircraft<'a> {
-    pub fn new(x: i32, y: i32, heading: u16, label: &'a str) -> Self {
+    pub fn new(x: f32, y: f32, heading: u16, label: &'a str) -> Self {
         Self {
-            pos: Point::new(x, y),
+            x,
+            y,
             heading,
             label,
         }
     }
 
-    pub fn draw<D>(&self, target: &mut D) -> Result<(), D::Error>
+    pub(crate) fn draw<D>(
+        &self,
+        target: &mut D,
+        top_heading: f32,
+        center: Point,
+        radar_radius: i32,
+        scale: RadarScale,
+    ) -> Result<(), D::Error>
     where
         D: DrawTarget<Color = Rgb565>,
     {
-        self.draw_track(target)?;
-        self.draw_symbol(target)?;
-        self.draw_label(target)?;
+        let position = self.position_to_radar(center, radar_radius, scale, top_heading);
+        self.draw_track(target, position)?;
+        self.draw_symbol(target, position)?;
+        self.draw_label(target, position)?;
 
         Ok(())
     }
 
-    fn draw_track<D>(&self, target: &mut D) -> Result<(), D::Error>
+    fn draw_track<D>(&self, target: &mut D, position: Point) -> Result<(), D::Error>
     where
         D: DrawTarget<Color = Rgb565>,
     {
         let direction = caclulate_heading_point(self.heading);
 
-        Line::new(self.pos, self.pos + direction)
+        Line::new(position, position + direction)
             .into_styled(PrimitiveStyle::with_stroke(AIRCRAFT_COLOUR, 1))
             .draw(target)?;
         Ok(())
     }
 
-    fn draw_symbol<D>(&self, target: &mut D) -> Result<(), D::Error>
+    fn draw_symbol<D>(&self, target: &mut D, position: Point) -> Result<(), D::Error>
     where
         D: DrawTarget<Color = Rgb565>,
     {
@@ -78,21 +91,21 @@ impl<'a> Aircraft<'a> {
             .stroke_width(1)
             .build();
 
-        Rectangle::new(self.pos - Point::new(2, 2), Size::new(5, 5))
+        Rectangle::new(position - Point::new(2, 2), Size::new(5, 5))
             .into_styled(style)
             .draw(target)?;
 
         Ok(())
     }
 
-    fn draw_label<D>(&self, target: &mut D) -> Result<(), D::Error>
+    fn draw_label<D>(&self, target: &mut D, position: Point) -> Result<(), D::Error>
     where
         D: DrawTarget<Color = Rgb565>,
     {
         // for now labels always at 90deg offset
         let track = caclulate_heading_point(self.heading);
         let label_start_point = Point::new(-track.y, track.x);
-        let label_end_point = self.pos + label_start_point;
+        let label_end_point = position + label_start_point;
 
         let alignment = if label_start_point.x > 0 {
             Alignment::Left
@@ -108,7 +121,7 @@ impl<'a> Aircraft<'a> {
             .alignment(alignment)
             .build();
 
-        Line::new(self.pos, label_end_point)
+        Line::new(position, label_end_point)
             .into_styled(PrimitiveStyle::with_stroke(LABEL_COLOUR, 1))
             .draw(target)?;
 
@@ -130,6 +143,27 @@ impl<'a> Aircraft<'a> {
         label_text.draw(target)?;
 
         Ok(())
+    }
+
+    fn position_to_radar(
+        &self,
+        center: Point,
+        radar_radius: i32,
+        scale: RadarScale,
+        top_heading: f32,
+    ) -> Point {
+        let pixels_per_meter = radar_radius as f32 / scale.to_meters() as f32;
+
+        let (sin, cos) = top_heading.to_radians().sin_cos();
+
+        let x = self.x * cos - self.y * sin;
+        let y = self.x * sin + self.y * cos;
+
+        center
+            + Point::new(
+                (x * pixels_per_meter).round() as i32,
+                (y * pixels_per_meter).round() as i32,
+            )
     }
 }
 

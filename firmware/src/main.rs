@@ -211,10 +211,8 @@ fn the_real_main() -> Result<(), Error> {
             let mut raw_aircraft: Vec<ApiAircraft> = Vec::new();
 
             let mut scale = RadarScale::Km30;
-            let mut redraw = |scale: RadarScale, aircraft: &[Aircraft<'_>]| -> Result<(), Error> {
-                rusty_radar_graphics::draw_frame(&mut display_device, scale)
-                    .map_err(|error| anyhow!("{error:?}"))?;
-                rusty_radar_graphics::draw_planes(&mut display_device, aircraft)
+            let mut redraw = |scale: RadarScale, aircraft: &[Aircraft]| -> Result<(), Error> {
+                rusty_radar_graphics::draw(&mut display_device, scale, aircraft, 156.0)
                     .map_err(|error| anyhow!("{error:?}"))?;
                 display_device
                     .flush()
@@ -258,10 +256,8 @@ fn the_real_main() -> Result<(), Error> {
                             let aircraft = raw_aircraft
                                 .iter()
                                 .map(|aircraft| {
-                                    let x = 120.0 + aircraft.position_offset.x / 30000.0 * 102.0;
-                                    let y = 120.0 - aircraft.position_offset.y / 30000.0 * 102.0;
                                     let track = aircraft.track.and_then(track_to_heading).unwrap_or(0);
-                                    rusty_radar_graphics::Aircraft::new(x as i32, y as i32, track, &aircraft.label)
+                                    rusty_radar_graphics::Aircraft::new(aircraft.position_offset.x as f32, aircraft.position_offset.y as f32, track, &aircraft.label)
                                 })
                                 .collect::<Vec<_>>();
 
@@ -282,10 +278,8 @@ fn the_real_main() -> Result<(), Error> {
                         let aircraft = raw_aircraft
                             .iter()
                             .map(|aircraft| {
-                                let x = 120.0 + aircraft.position_offset.x / 30000.0 * 102.0;
-                                let y = 120.0 - aircraft.position_offset.y / 30000.0 * 102.0;
                                 let track = aircraft.track.and_then(track_to_heading).unwrap_or(0);
-                                rusty_radar_graphics::Aircraft::new(x as i32, y as i32, track, &aircraft.label)
+                                rusty_radar_graphics::Aircraft::new(aircraft.position_offset.x as f32, aircraft.position_offset.y as f32, track, &aircraft.label)
                             })
                             .collect::<Vec<_>>();
 
