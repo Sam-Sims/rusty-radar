@@ -1,5 +1,8 @@
 /.vscode
 /.embuild
+/firmware/.embuild
 /target
+/firmware/target
 /Cargo.lock
+/firmware/Cargo.lock
 .envrc
