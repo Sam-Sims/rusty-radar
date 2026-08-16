@@ -11,8 +11,6 @@ use embedded_graphics_simulator::{
 use rusty_radar_graphics::RadarScale;
 use serde::Deserialize;
 
-use crate::simcraft::SimCraft;
-
 pub mod simcraft;
 
 #[derive(Deserialize)]
@@ -36,12 +34,12 @@ fn fetch_aircraft(
     resp.json::<Vec<RawAPIArcraft>>()
 }
 
-fn track_to_heading(track: f64) -> Option<u16> {
+fn track_to_heading(track: f64) -> Option<f32> {
     if !track.is_finite() {
         return None;
     }
-    let deg = track.rem_euclid(360.0).round() as u16;
-    Some(deg % 360)
+    let deg = track.rem_euclid(360.0).round() as f32;
+    Some(deg % 360.0)
 }
 
 fn main() -> Result<(), core::convert::Infallible> {
@@ -81,7 +79,7 @@ fn main() -> Result<(), core::convert::Infallible> {
             let aircraft = raw_aircraft
                 .iter()
                 .map(|aircraft| {
-                    let track = aircraft.track.and_then(track_to_heading).unwrap_or(0);
+                    let track = aircraft.track.and_then(track_to_heading).unwrap_or(0.0);
                     rusty_radar_graphics::Aircraft::new(
                         aircraft.position_offset.x as f32,
                         aircraft.position_offset.y as f32,

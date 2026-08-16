@@ -12,37 +12,17 @@ use crate::RadarScale;
 const LABEL_FONT: &MonoFont<'static> = &FONT_5X8;
 const AIRCRAFT_COLOUR: Rgb565 = Rgb565::GREEN;
 const LABEL_COLOUR: Rgb565 = Rgb565::CSS_LIGHT_GRAY;
-
-// this is a no trigonometry zone
-// pre-computed vectors for 16 directions which should be enough resolution on a small display
-const HEADING_VECTOR: [(i32, i32); 16] = [
-    (0, -10),
-    (4, -9),
-    (7, -7),
-    (9, -4),
-    (10, 0),
-    (9, 4),
-    (7, 7),
-    (4, 9),
-    (0, 10),
-    (-4, 9),
-    (-7, 7),
-    (-9, 4),
-    (-10, 0),
-    (-9, -4),
-    (-7, -7),
-    (-4, -9),
-];
+const TRACK_LENGTH: f32 = 10.0;
 
 pub struct Aircraft<'a> {
     x: f32,
     y: f32,
-    heading: u16,
+    heading: f32,
     label: &'a str,
 }
 
 impl<'a> Aircraft<'a> {
-    pub fn new(x: f32, y: f32, heading: u16, label: &'a str) -> Self {
+    pub fn new(x: f32, y: f32, heading: f32, label: &'a str) -> Self {
         Self {
             x,
             y,
@@ -167,8 +147,13 @@ impl<'a> Aircraft<'a> {
     }
 }
 
-fn caclulate_heading_point(heading: u16) -> Point {
-    let vector_bin = (heading as usize * HEADING_VECTOR.len()) / 360;
-    let (x, y) = HEADING_VECTOR[vector_bin];
-    Point::new(x, y)
+fn caclulate_heading_point(heading: f32) -> Point {
+    // let vector_bin = (heading as usize * HEADING_VECTOR.len()) / 360;
+    // let (x, y) = HEADING_VECTOR[vector_bin];
+    // Point::new(x, y)
+    let (sin, cos) = heading.to_radians().sin_cos();
+    Point::new(
+        (sin * TRACK_LENGTH).round() as i32,
+        (-cos * TRACK_LENGTH).round() as i32,
+    )
 }

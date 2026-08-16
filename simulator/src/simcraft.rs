@@ -8,7 +8,7 @@ pub struct SimCraft {
     y: f32,
     dx: f32,
     dy: f32,
-    heading: u16,
+    heading: f32,
     label: String,
 }
 
@@ -16,8 +16,8 @@ impl SimCraft {
     pub fn new() -> Self {
         let mut rng = SmallRng::from_os_rng();
 
-        let heading = rng.random_range(0..360);
-        let heading_rad = (heading as f32).to_radians();
+        let heading = rng.random_range(0..360) as f32;
+        let heading_rad = (heading).to_radians();
 
         let callsign = format!(
             "{}{}{:03}",

@@ -142,12 +142,13 @@ pub fn request_planes(client: &mut HttpClient<EspHttpConnection>) -> Result<Vec<
 
 }
 
-fn track_to_heading(track: f64) -> Option<u16> {
+fn track_to_heading(track: f64) -> Option<f32> {
     if !track.is_finite() {
         return None;
     }
-    let deg = track.rem_euclid(360.0).round() as u16;
-    Some(deg % 360)
+    let deg = track.rem_euclid(360.0).round();
+    let deg = deg % 360.0;
+    Some(deg as f32)
 }
 
 fn the_real_main() -> Result<(), Error> {
@@ -256,7 +257,7 @@ fn the_real_main() -> Result<(), Error> {
                             let aircraft = raw_aircraft
                                 .iter()
                                 .map(|aircraft| {
-                                    let track = aircraft.track.and_then(track_to_heading).unwrap_or(0);
+                                    let track = aircraft.track.and_then(track_to_heading).unwrap_or(0.0);
                                     rusty_radar_graphics::Aircraft::new(aircraft.position_offset.x as f32, aircraft.position_offset.y as f32, track, &aircraft.label)
                                 })
                                 .collect::<Vec<_>>();
@@ -278,7 +279,7 @@ fn the_real_main() -> Result<(), Error> {
                         let aircraft = raw_aircraft
                             .iter()
                             .map(|aircraft| {
-                                let track = aircraft.track.and_then(track_to_heading).unwrap_or(0);
+                                let track = aircraft.track.and_then(track_to_heading).unwrap_or(0.0);
                                 rusty_radar_graphics::Aircraft::new(aircraft.position_offset.x as f32, aircraft.position_offset.y as f32, track, &aircraft.label)
                             })
                             .collect::<Vec<_>>();
