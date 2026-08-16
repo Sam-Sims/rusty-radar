@@ -46,7 +46,7 @@ impl RadarScale {
         match self {
             Self::Km5 => "5km",
             Self::Km10 => "10km",
-            Self::Km30 => "20km",
+            Self::Km30 => "30km",
         }
     }
 
